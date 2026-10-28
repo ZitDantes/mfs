@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Mariage civil — Sandy & Flav" />
+    <title>Mariage civil — Sandy &amp; Flav</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="invite-gate" class="gate">
+      <div class="gate__panel">
+        <p class="gate__brand">Sandy &amp; Flav</p>
+        <p class="gate__lead">
+          Entrez le code figurant sur votre invitation pour accéder au site.
+        </p>
+        <form id="invite-form" class="gate__form" autocomplete="off">
+          <label class="sr-only" for="invite-code">Code d’invitation</label>
+          <input
+            id="invite-code"
+            name="code"
+            type="text"
+            inputmode="text"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="Votre code"
+            required
+          />
+          <button class="btn" type="submit">Entrer</button>
+          <p id="invite-error" class="gate__error" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="site" class="site" hidden>
+      <header class="site-header">
+        <div class="site-header__inner">
+          <a class="brand" href="index.html">Sandy &amp; Flav</a>
+          <nav class="nav" aria-label="Navigation principale">
+            <a href="index.html">Accueil</a>
+            <a href="civil.html" data-nav-civil>Civil</a>
+            <a href="religieux.html" data-nav-religieux>Célébration</a>
+            <a href="infos.html">Infos</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main">
+        <header class="page-intro">
+          <p class="section__eyebrow">Épinay-sur-Orge</p>
+          <h1>Mariage civil</h1>
+          <p>
+            Après 20&nbsp;ans d’amour, le temps est venu pour nous de se dire
+            OUI&nbsp;! Nous voulions, bien sûr, être entourés de notre famille et
+            de nos amis. Nous espérons pouvoir partager cette nouvelle étape de
+            notre vie à vos côtés&nbsp;!
+          </p>
+        </header>
+
+        <section class="section">
+          <div class="ornament" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="9" cy="12" r="3.2" />
+              <circle cx="15" cy="12" r="3.2" />
+            </svg>
+          </div>
+
+          <div class="event-block">
+            <p class="when">Samedi 5 juin 2027 — 16h15</p>
+            <h3>Cérémonie civile</h3>
+            <p>
+              Rendez-vous à la mairie d’Épinay-sur-Orge<br />
+              <span class="tbc">Adresse complète à venir</span>
+            </p>
+          </div>
+
+          <div class="event-block">
+            <p class="when">Samedi 5 juin 2027 — 17h45</p>
+            <h3>Vin d’honneur</h3>
+            <p>
+              Salle des Templiers<br />
+              Épinay-sur-Orge
+            </p>
+          </div>
+
+          <p>
+            <a class="btn btn--outline" href="infos.html">Comment s’y rendre</a>
+          </p>
+        </section>
+
+        <section class="section" id="rsvp">
+          <p class="section__eyebrow">Réponse</p>
+          <h2 class="section__title">Confirmez votre présence</h2>
+          <p class="section__lead">
+            Merci de nous indiquer si vous serez des nôtres pour le mariage
+            civil et le vin d’honneur.
+          </p>
+
+          <form
+            class="form rsvp-form"
+            data-evenement="civil"
+            novalidate
+          >
+            <div class="form__row">
+              <label for="civil-nom">Nom et prénom</label>
+              <input id="civil-nom" name="nom" type="text" required autocomplete="name" />
+            </div>
+
+            <div class="form__row form__row--split">
+              <div>
+                <label for="civil-email">E-mail</label>
+                <input id="civil-email" name="email" type="email" autocomplete="email" />
+              </div>
+              <div>
+                <label for="civil-tel">Téléphone</label>
+                <input id="civil-tel" name="telephone" type="tel" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="civil-participation-label">Participation</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="civil-participation-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="participation" value="oui" required />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="participation" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="civil-enfants-label">Je viens avec les enfants</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="civil-enfants-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="enfants" value="oui" required />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="enfants" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row children-fields" hidden>
+              <label for="civil-nb-enfants">Nombre d’enfants</label>
+              <input
+                id="civil-nb-enfants"
+                name="nb_enfants"
+                type="number"
+                min="1"
+                max="20"
+                inputmode="numeric"
+              />
+            </div>
+
+            <div class="form__row">
+              <label for="civil-allergies">Allergies / régimes alimentaires</label>
+              <input id="civil-allergies" name="allergies" type="text" />
+              <p class="form__hint">Optionnel — utile pour le vin d’honneur.</p>
+            </div>
+
+            <div class="form__row">
+              <label for="civil-message">Message</label>
+              <textarea id="civil-message" name="message" rows="3"></textarea>
+            </div>
+
+            <button class="btn" type="submit">Envoyer ma réponse</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span class="script">Sandy &amp; Flav</span>
+        Avec amour — 2027
+      </footer>
+    </div>
+
+    <script src="js/invite.js"></script>
+    <script src="js/rsvp.js"></script>
+  </body>
+</html>

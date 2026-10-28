@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Sandy & Flav — mariage 2027" />
+    <title>Sandy &amp; Flav</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="invite-gate" class="gate">
+      <div class="gate__panel">
+        <p class="gate__brand">Sandy &amp; Flav</p>
+        <p class="gate__lead">
+          Entrez le code figurant sur votre invitation pour accéder au site.
+        </p>
+        <form id="invite-form" class="gate__form" autocomplete="off">
+          <label class="sr-only" for="invite-code">Code d’invitation</label>
+          <input
+            id="invite-code"
+            name="code"
+            type="text"
+            inputmode="text"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="Votre code"
+            required
+          />
+          <button class="btn" type="submit">Entrer</button>
+          <p id="invite-error" class="gate__error" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="site" class="site" hidden>
+      <header class="site-header">
+        <div class="site-header__inner">
+          <a class="brand" href="index.html">Sandy &amp; Flav</a>
+          <nav class="nav" aria-label="Navigation principale">
+            <a href="index.html">Accueil</a>
+            <a href="civil.html" data-nav-civil>Civil</a>
+            <a href="religieux.html" data-nav-religieux>Célébration</a>
+            <a href="infos.html">Infos</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main">
+        <section class="hero" aria-label="Sandy et Flav">
+          <div class="hero__media">
+            <img
+              src="assets/photo-couple.jpg"
+              alt="Portrait de Sandy et Flav"
+              width="1600"
+              height="1067"
+            />
+            <div class="hero__veil" aria-hidden="true"></div>
+          </div>
+          <div class="hero__content">
+            <p class="hero__eyebrow">Save the date</p>
+            <h1 class="hero__names">Sandy &amp; Flav</h1>
+            <p class="hero__text">
+              Après 20&nbsp;ans d’amour, le temps est venu pour nous de se dire
+              OUI&nbsp;! Nous voulions, bien sûr, être entourés de notre famille
+              et de nos amis.
+            </p>
+            <div class="hero__actions">
+              <a class="btn" href="civil.html" data-show-civil>Mariage civil</a>
+              <a
+                class="btn btn--ghost"
+                href="religieux.html"
+                data-show-religieux
+                >Célébration</a
+              >
+              <a class="btn btn--ghost" href="infos.html">Infos pratiques</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="ornament" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"
+              />
+            </svg>
+          </div>
+          <p class="section__eyebrow">Notre histoire</p>
+          <h2 class="section__title">Nous espérons partager cette étape avec vous</h2>
+          <p class="section__lead">
+            Nous espérons pouvoir partager cette nouvelle étape de notre vie à
+            vos côtés&nbsp;!
+          </p>
+
+          <div class="event-block" data-show-civil>
+            <p class="when">Samedi 5 juin 2027</p>
+            <h3>Mariage civil &amp; vin d’honneur</h3>
+            <p>Mairie d’Épinay-sur-Orge, puis Salle des Templiers.</p>
+            <p><a href="civil.html">Voir les détails et répondre</a></p>
+          </div>
+
+          <div class="event-block" data-show-religieux>
+            <p class="when">Samedi 17 &amp; dimanche 18 juillet 2027</p>
+            <h3>Cérémonie religieuse &amp; réception</h3>
+            <p>
+              Église <span class="tbc">(lieu et heure à confirmer)</span>, puis
+              Domaine de la Brosse à Montmort / La Madeleine-Villefrouin.
+            </p>
+            <p><a href="religieux.html">Voir les détails et répondre</a></p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span class="script">Sandy &amp; Flav</span>
+        Avec amour — 2027
+      </footer>
+    </div>
+
+    <script src="js/invite.js"></script>
+  </body>
+</html>

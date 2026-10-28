@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Célébration — Sandy & Flav" />
+    <title>Célébration — Sandy &amp; Flav</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="invite-gate" class="gate">
+      <div class="gate__panel">
+        <p class="gate__brand">Sandy &amp; Flav</p>
+        <p class="gate__lead">
+          Entrez le code figurant sur votre invitation pour accéder au site.
+        </p>
+        <form id="invite-form" class="gate__form" autocomplete="off">
+          <label class="sr-only" for="invite-code">Code d’invitation</label>
+          <input
+            id="invite-code"
+            name="code"
+            type="text"
+            inputmode="text"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="Votre code"
+            required
+          />
+          <button class="btn" type="submit">Entrer</button>
+          <p id="invite-error" class="gate__error" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="site" class="site" hidden>
+      <header class="site-header">
+        <div class="site-header__inner">
+          <a class="brand" href="index.html">Sandy &amp; Flav</a>
+          <nav class="nav" aria-label="Navigation principale">
+            <a href="index.html">Accueil</a>
+            <a href="civil.html" data-nav-civil>Civil</a>
+            <a href="religieux.html" data-nav-religieux>Célébration</a>
+            <a href="infos.html">Infos</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-main">
+        <header class="page-intro">
+          <p class="section__eyebrow">Juillet 2027</p>
+          <h1>Cérémonie &amp; réception</h1>
+          <p>
+            Après 20&nbsp;ans d’amour, le temps est venu pour nous de se dire
+            OUI&nbsp;! Nous voulions, bien sûr, être entourés de notre famille et
+            de nos amis. Nous espérons pouvoir partager cette nouvelle étape de
+            notre vie à vos côtés&nbsp;!
+          </p>
+        </header>
+
+        <section class="section">
+          <div class="ornament" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 20V10l8-6 8 6v10H4z" />
+              <path d="M10 20v-6h4v6" />
+            </svg>
+          </div>
+
+          <div class="event-block">
+            <p class="when">Samedi 17 juillet 2027 — <span class="tbc">heure TBC</span></p>
+            <h3>Cérémonie religieuse</h3>
+            <p>
+              À l’église <span class="tbc">(lieu à confirmer)</span>
+            </p>
+          </div>
+
+          <div class="event-block">
+            <p class="when">Samedi 17 juillet 2027 — à suivre</p>
+            <h3>Cocktail, dîner &amp; soirée</h3>
+            <p>
+              Domaine de la Brosse<br />
+              Montmort — La Madeleine-Villefrouin
+            </p>
+          </div>
+
+          <div class="event-block">
+            <p class="when">Dimanche 18 juillet 2027</p>
+            <h3>Brunch</h3>
+            <p>
+              Domaine de la Brosse<br />
+              Montmort — La Madeleine-Villefrouin
+            </p>
+            <p class="form__hint">
+              Pas de réponse séparée pour le brunch — indiquez simplement votre
+              présence à la journée du 17 ci-dessous.
+            </p>
+          </div>
+
+          <p>
+            <a class="btn btn--outline" href="infos.html">Accès &amp; hébergements</a>
+          </p>
+        </section>
+
+        <section class="section" id="rsvp">
+          <p class="section__eyebrow">Réponse</p>
+          <h2 class="section__title">Confirmez votre présence</h2>
+          <p class="section__lead">
+            Merci de nous indiquer si vous serez des nôtres pour la cérémonie et
+            la réception du 17&nbsp;juillet.
+          </p>
+
+          <form
+            class="form rsvp-form"
+            data-evenement="religieux"
+            novalidate
+          >
+            <div class="form__row">
+              <label for="rel-nom">Nom et prénom</label>
+              <input id="rel-nom" name="nom" type="text" required autocomplete="name" />
+            </div>
+
+            <div class="form__row form__row--split">
+              <div>
+                <label for="rel-email">E-mail</label>
+                <input id="rel-email" name="email" type="email" autocomplete="email" />
+              </div>
+              <div>
+                <label for="rel-tel">Téléphone</label>
+                <input id="rel-tel" name="telephone" type="tel" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="rel-participation-label">Participation</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="rel-participation-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="participation" value="oui" required />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="participation" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="rel-enfants-label">Je viens avec les enfants</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="rel-enfants-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="enfants" value="oui" required />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="enfants" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row children-fields" hidden>
+              <label for="rel-nb-enfants">Nombre d’enfants</label>
+              <input
+                id="rel-nb-enfants"
+                name="nb_enfants"
+                type="number"
+                min="1"
+                max="20"
+                inputmode="numeric"
+              />
+            </div>
+
+            <div class="form__row">
+              <label for="rel-allergies">Allergies / régimes alimentaires</label>
+              <input id="rel-allergies" name="allergies" type="text" />
+              <p class="form__hint">
+                Optionnel — les choix de menus arriveront plus tard.
+              </p>
+            </div>
+
+            <div class="form__row">
+              <label for="rel-message">Message</label>
+              <textarea id="rel-message" name="message" rows="3"></textarea>
+            </div>
+
+            <button class="btn" type="submit">Envoyer ma réponse</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span class="script">Sandy &amp; Flav</span>
+        Avec amour — 2027
+      </footer>
+    </div>
+
+    <script src="js/invite.js"></script>
+    <script src="js/rsvp.js"></script>
+  </body>
+</html>
