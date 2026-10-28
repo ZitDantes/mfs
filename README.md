@@ -33,12 +33,14 @@ Sans code valide, le site demande le code et ne liste aucun événement.
 
 3. **Extensions → Apps Script** (depuis ce Sheet, pas un projet vide à part)
 4. Colle [`gas/Code.gs`](gas/Code.gs)
-5. Exécute d’abord `testSheet` → accepte les permissions Sheet
+5. Exécute **`testSheet`** une fois → autorise + mémorise l’ID du Sheet (nécessaire pour la Web App)
 6. Déployer → Nouveau déploiement → **Application Web**
    - Exécuter en tant que : **Moi**
    - Qui a accès : **Tout le monde**
-7. Copier l’URL `…/exec` dans [`js/rsvp.js`](js/rsvp.js) → constante `GAS_URL`
-8. Commit + push
+7. Après chaque modif du script : **Gérer les déploiements** → crayon → **Nouvelle version** → Déployer  
+   (sinon le site continue d’appeler l’ancienne version)
+8. Copier l’URL `…/exec` dans [`js/rsvp.js`](js/rsvp.js) → constante `GAS_URL`
+9. Commit + push
 
 Extracts : filtrer le Sheet puis Fichier → Télécharger → CSV.
 

@@ -1,39 +1,37 @@
 /**
  * Sandy & Flav — RSVP → Google Sheet
  *
- * IMPORTANT : créer ce script DEPUIS le Sheet
- * (ouvrir le Sheet → Extensions → Apps Script).
- * Ne pas utiliser SpreadsheetApp.openById() dans un projet isolé
- * si Google bloque l’OAuth « sensitive » Spreadsheet.
+ * Script lié au Sheet (Extensions → Apps Script depuis le classeur).
  *
- * Setup :
- * 1. Sheet avec une feuille nommée "RSVP"
- * 2. Ligne 1 (en-têtes) :
- *    timestamp | parcours | evenement | nom | email | telephone |
- *    participation | enfants | nb_enfants | allergies | message
- *
- *    evenement: civil | religieux | combined
- *    participation (seul): oui | non
- *    participation (combined): les-deux | civil | religieux | aucun
- *
- * 3. Extensions → Apps Script → coller ce fichier (projet lié au Sheet)
- * 4. Exécuter d’abord la fonction testSheet() pour autoriser l’accès
- * 5. Déployer → Nouveau déploiement → Application Web
+ * 1. Coller ce code
+ * 2. Exécuter testSheet() UNE FOIS (autorise + mémorise l’ID du Sheet)
+ * 3. Déployer / mettre à jour l’Application Web
  *    - Exécuter en tant que : Moi
  *    - Qui a accès : Tout le monde
- * 6. Copier l’URL …/exec dans js/rsvp.js → constante GAS_URL
+ *    - Après chaque modif du code : Gérer les déploiements → crayon
+ *      → Version = Nouvelle version → Déployer
+ * 4. URL …/exec → js/rsvp.js (GAS_URL)
+ *
+ * En Web App, getActiveSpreadsheet() est souvent null : on utilise
+ * donc l’ID enregistré par testSheet() + openById().
  */
 
 var SHEET_NAME = "RSVP";
+var PROP_SHEET_ID = "SHEET_ID";
 
 function getRsvpSheet_() {
-  // Projet lié au classeur = pas besoin de SHEET_ID / openById
   var ss = SpreadsheetApp.getActiveSpreadsheet();
+
   if (!ss) {
-    throw new Error(
-      "Aucun classeur actif. Ouvre Apps Script depuis le Sheet (Extensions → Apps Script)."
-    );
+    var id = PropertiesService.getScriptProperties().getProperty(PROP_SHEET_ID);
+    if (!id) {
+      throw new Error(
+        "Sheet non lié. Exécute testSheet() une fois dans l’éditeur Apps Script."
+      );
+    }
+    ss = SpreadsheetApp.openById(id);
   }
+
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     throw new Error('Feuille "' + SHEET_NAME + '" introuvable.');
@@ -41,12 +39,26 @@ function getRsvpSheet_() {
   return sheet;
 }
 
-/** À exécuter une fois dans l’éditeur pour déclencher / valider les droits Sheet. */
+/** À exécuter une fois : droits + mémorisation de l’ID pour la Web App. */
 function testSheet() {
-  var sheet = getRsvpSheet_();
-  Logger.log("OK — classeur : " + sheet.getParent().getName());
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error(
+      "Ouvre Apps Script depuis le Sheet (Extensions → Apps Script), pas un projet isolé."
+    );
+  }
+
+  PropertiesService.getScriptProperties().setProperty(PROP_SHEET_ID, ss.getId());
+
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    throw new Error('Feuille "' + SHEET_NAME + '" introuvable.');
+  }
+
+  Logger.log("OK — classeur : " + ss.getName() + " (" + ss.getId() + ")");
   Logger.log("OK — feuille : " + sheet.getName());
   Logger.log("OK — lignes : " + sheet.getLastRow());
+  Logger.log("ID mémorisé pour la Web App. Mets à jour le déploiement (nouvelle version).");
 }
 
 function doPost(e) {
@@ -80,8 +92,13 @@ function doPost(e) {
 
 function doGet() {
   try {
-    getRsvpSheet_();
-    return json_({ ok: true, service: "mfs-rsvp" });
+    var sheet = getRsvpSheet_();
+    return json_({
+      ok: true,
+      service: "mfs-rsvp",
+      sheet: sheet.getName(),
+      rows: sheet.getLastRow(),
+    });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
   }

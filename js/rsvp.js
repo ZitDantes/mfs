@@ -121,8 +121,11 @@
       json = null;
     }
 
-    if (!res.ok || (json && json.ok === false)) {
-      throw new Error((json && json.error) || "Envoi impossible pour le moment.");
+    if (!res.ok || !json || json.ok !== true) {
+      throw new Error(
+        (json && json.error) ||
+          "Envoi impossible pour le moment. Vérifie le déploiement Apps Script."
+      );
     }
 
     return json;
