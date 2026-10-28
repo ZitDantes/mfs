@@ -6,6 +6,10 @@
  * 2. Ligne 1 (en-têtes) :
  *    timestamp | parcours | evenement | nom | email | telephone |
  *    participation | enfants | nb_enfants | allergies | message
+ *
+ *    evenement: civil | religieux | combined
+ *    participation (seul): oui | non
+ *    participation (combined): les-deux | civil | religieux | aucun
  * 3. Extensions → Apps Script → coller ce fichier
  * 4. Remplacer SHEET_ID ci-dessous par l’ID du document
  *    (dans l’URL : https://docs.google.com/spreadsheets/d/SHEET_ID/edit)

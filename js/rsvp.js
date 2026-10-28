@@ -33,11 +33,21 @@
     if (kind) el.classList.add(kind);
   }
 
+  function isAttending(participation) {
+    return (
+      participation === "oui" ||
+      participation === "civil" ||
+      participation === "religieux" ||
+      participation === "les-deux"
+    );
+  }
+
   function collectPayload(form) {
     var invite = getInvite();
     var data = new FormData(form);
     var enfants = data.get("enfants") || "non";
     var nb = data.get("nb_enfants");
+    var participation = String(data.get("participation") || "");
 
     return {
       parcours: invite ? invite.id : "",
@@ -45,9 +55,10 @@
       nom: String(data.get("nom") || "").trim(),
       email: String(data.get("email") || "").trim(),
       telephone: String(data.get("telephone") || "").trim(),
-      participation: String(data.get("participation") || ""),
-      enfants: String(enfants),
-      nb_enfants: enfants === "oui" ? String(nb || "") : "",
+      participation: participation,
+      enfants: isAttending(participation) ? String(enfants) : "non",
+      nb_enfants:
+        isAttending(participation) && enfants === "oui" ? String(nb || "") : "",
       allergies: String(data.get("allergies") || "").trim(),
       message: String(data.get("message") || "").trim(),
     };
@@ -55,13 +66,35 @@
 
   function validate(payload) {
     if (!payload.nom) return "Indiquez votre nom.";
-    if (!payload.participation) return "Indiquez si vous participez.";
-    if (!payload.enfants) return "Indiquez si vous venez avec des enfants.";
-    if (payload.enfants === "oui") {
-      var n = Number(payload.nb_enfants);
-      if (!n || n < 1) return "Indiquez le nombre d’enfants.";
+    if (!payload.participation) return "Indiquez votre participation.";
+    if (isAttending(payload.participation)) {
+      if (!payload.enfants) return "Indiquez si vous venez avec des enfants.";
+      if (payload.enfants === "oui") {
+        var n = Number(payload.nb_enfants);
+        if (!n || n < 1) return "Indiquez le nombre d’enfants.";
+      }
     }
     return "";
+  }
+
+  function toggleAttendanceFields(form) {
+    var selected = form.querySelector('input[name="participation"]:checked');
+    var attending = !!(selected && isAttending(selected.value));
+    var extras = form.querySelectorAll("[data-if-attending]");
+    extras.forEach(function (el) {
+      el.hidden = !attending;
+    });
+    if (!attending) {
+      var fields = form.querySelector(".children-fields");
+      var nb = form.querySelector('input[name="nb_enfants"]');
+      if (fields) fields.hidden = true;
+      if (nb) {
+        nb.required = false;
+        nb.value = "";
+      }
+    } else {
+      toggleChildren(form);
+    }
   }
 
   async function submitToGas(payload) {
@@ -100,7 +133,12 @@
         toggleChildren(form);
       });
     });
-    toggleChildren(form);
+    form.querySelectorAll('input[name="participation"]').forEach(function (input) {
+      input.addEventListener("change", function () {
+        toggleAttendanceFields(form);
+      });
+    });
+    toggleAttendanceFields(form);
 
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
@@ -121,7 +159,7 @@
         await submitToGas(payload);
         setStatus(form, "Merci ! Votre réponse a bien été enregistrée.", "is-ok");
         form.reset();
-        toggleChildren(form);
+        toggleAttendanceFields(form);
       } catch (err) {
         setStatus(
           form,

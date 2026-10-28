@@ -65,6 +65,7 @@
               et de nos amis.
             </p>
             <div class="hero__actions">
+              <a class="btn" href="#rsvp" data-show-both>Répondre</a>
               <a class="btn" href="civil.html" data-show-civil>Mariage civil</a>
               <a
                 class="btn btn--ghost"
@@ -96,7 +97,10 @@
             <p class="when">Samedi 5 juin 2027</p>
             <h3>Mariage civil &amp; vin d’honneur</h3>
             <p>Mairie d’Épinay-sur-Orge, puis Salle des Templiers.</p>
-            <p><a href="civil.html">Voir les détails et répondre</a></p>
+            <p data-show-civil-only>
+              <a href="civil.html">Voir les détails et répondre</a>
+            </p>
+            <p data-show-both><a href="civil.html">Voir les détails</a></p>
           </div>
 
           <div class="event-block" data-show-religieux>
@@ -106,8 +110,129 @@
               Église <span class="tbc">(lieu et heure à confirmer)</span>, puis
               Domaine de la Brosse à Montmort / La Madeleine-Villefrouin.
             </p>
-            <p><a href="religieux.html">Voir les détails et répondre</a></p>
+            <p data-show-religieux-only>
+              <a href="religieux.html">Voir les détails et répondre</a>
+            </p>
+            <p data-show-both><a href="religieux.html">Voir les détails</a></p>
           </div>
+        </section>
+
+        <section class="section" id="rsvp" data-show-both>
+          <p class="section__eyebrow">Réponse</p>
+          <h2 class="section__title">Confirmez votre présence</h2>
+          <p class="section__lead">
+            Un seul formulaire pour les deux événements — indiquez simplement
+            auxquels vous pourrez venir.
+          </p>
+
+          <form class="form rsvp-form" data-evenement="combined" novalidate>
+            <div class="form__row">
+              <label for="both-nom">Nom et prénom</label>
+              <input
+                id="both-nom"
+                name="nom"
+                type="text"
+                required
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form__row form__row--split">
+              <div>
+                <label for="both-email">E-mail</label>
+                <input
+                  id="both-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                />
+              </div>
+              <div>
+                <label for="both-tel">Téléphone</label>
+                <input
+                  id="both-tel"
+                  name="telephone"
+                  type="tel"
+                  autocomplete="tel"
+                />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="both-participation-label">Je viens…</span>
+              <div
+                class="choice-group choice-group--stack"
+                role="radiogroup"
+                aria-labelledby="both-participation-label"
+              >
+                <label class="choice">
+                  <input
+                    type="radio"
+                    name="participation"
+                    value="les-deux"
+                    required
+                  />
+                  Aux deux événements
+                </label>
+                <label class="choice">
+                  <input type="radio" name="participation" value="civil" />
+                  Au mariage civil seulement (5&nbsp;juin)
+                </label>
+                <label class="choice">
+                  <input type="radio" name="participation" value="religieux" />
+                  À la célébration seulement (17&nbsp;juillet)
+                </label>
+                <label class="choice">
+                  <input type="radio" name="participation" value="aucun" />
+                  À aucun des deux
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row" data-if-attending>
+              <span id="both-enfants-label">Je viens avec les enfants</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="both-enfants-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="enfants" value="oui" />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="enfants" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row children-fields" data-if-attending hidden>
+              <label for="both-nb-enfants">Nombre d’enfants</label>
+              <input
+                id="both-nb-enfants"
+                name="nb_enfants"
+                type="number"
+                min="1"
+                max="20"
+                inputmode="numeric"
+              />
+            </div>
+
+            <div class="form__row" data-if-attending>
+              <label for="both-allergies">Allergies / régimes alimentaires</label>
+              <input id="both-allergies" name="allergies" type="text" />
+              <p class="form__hint">Optionnel — utile pour les repas.</p>
+            </div>
+
+            <div class="form__row">
+              <label for="both-message">Message</label>
+              <textarea id="both-message" name="message" rows="3"></textarea>
+            </div>
+
+            <button class="btn" type="submit">Envoyer ma réponse</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </form>
         </section>
       </main>
 
@@ -118,5 +243,6 @@
     </div>
 
     <script src="js/invite.js"></script>
+    <script src="js/rsvp.js"></script>
   </body>
 </html>

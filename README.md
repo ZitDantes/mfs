@@ -36,7 +36,14 @@ Sans code valide, le site demande le code et ne liste aucun événement.
 6. Copier l’URL `…/exec` dans [`js/rsvp.js`](js/rsvp.js) → constante `GAS_URL`
 7. Commit + push
 
-Extracts : filtrer le Sheet par `evenement` (`civil` / `religieux`) ou `parcours` (`epinay` / `brosse` / `20ans`), puis Fichier → Télécharger → CSV.
+Extracts : filtrer le Sheet puis Fichier → Télécharger → CSV.
+
+- Invité civil seul : `evenement=civil`, `participation=oui|non`
+- Invité religieux seul : `evenement=religieux`, `participation=oui|non`
+- Invité aux deux : `evenement=combined`, `participation=les-deux|civil|religieux|aucun`
+
+Liste civil ≈ `participation` in (`oui`, `civil`, `les-deux`) selon le parcours.  
+Liste religieux ≈ `participation` in (`oui`, `religieux`, `les-deux`).
 
 ## Structure
 

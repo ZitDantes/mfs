@@ -88,7 +88,19 @@
           </p>
         </section>
 
-        <section class="section" id="rsvp">
+        <section class="section" id="rsvp" data-show-both>
+          <p class="section__eyebrow">Réponse</p>
+          <h2 class="section__title">Confirmez votre présence</h2>
+          <p class="section__lead">
+            Vous êtes invités aux deux événements : une seule réponse suffit
+            sur la page d’accueil.
+          </p>
+          <p>
+            <a class="btn" href="index.html#rsvp">Répondre une seule fois</a>
+          </p>
+        </section>
+
+        <section class="section" id="rsvp-civil" data-show-civil-only>
           <p class="section__eyebrow">Réponse</p>
           <h2 class="section__title">Confirmez votre présence</h2>
           <p class="section__lead">
@@ -135,7 +147,7 @@
               </div>
             </div>
 
-            <div class="form__row">
+            <div class="form__row" data-if-attending>
               <span id="civil-enfants-label">Je viens avec les enfants</span>
               <div
                 class="choice-group"
@@ -143,7 +155,7 @@
                 aria-labelledby="civil-enfants-label"
               >
                 <label class="choice">
-                  <input type="radio" name="enfants" value="oui" required />
+                  <input type="radio" name="enfants" value="oui" />
                   Oui
                 </label>
                 <label class="choice">
@@ -153,7 +165,7 @@
               </div>
             </div>
 
-            <div class="form__row children-fields" hidden>
+            <div class="form__row children-fields" data-if-attending hidden>
               <label for="civil-nb-enfants">Nombre d’enfants</label>
               <input
                 id="civil-nb-enfants"
@@ -165,7 +177,7 @@
               />
             </div>
 
-            <div class="form__row">
+            <div class="form__row" data-if-attending>
               <label for="civil-allergies">Allergies / régimes alimentaires</label>
               <input id="civil-allergies" name="allergies" type="text" />
               <p class="form__hint">Optionnel — utile pour le vin d’honneur.</p>
