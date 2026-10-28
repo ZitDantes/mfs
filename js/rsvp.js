@@ -5,7 +5,8 @@
    * Coller ici l’URL de déploiement Apps Script (Web App).
    * Exemple : https://script.google.com/macros/s/XXXX/exec
    */
-  var GAS_URL = "";
+  var GAS_URL =
+    "https://script.google.com/macros/s/AKfycbyOPtF0MuMgtP7gx7RbPUdtQqLEHK9euyljDn1A0hWt3ZSXC2ZppsBNnitB8KUC8CbO/exec";
 
   function getInvite() {
     return (window.MFSInvite && window.MFSInvite.get && window.MFSInvite.get()) || null;
