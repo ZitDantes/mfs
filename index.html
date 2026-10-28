@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Sandy & Flav — mariage 2027" />
     <title>Sandy &amp; Flav</title>
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/styles.css?v=3" />
   </head>
   <body>
     <div id="invite-gate" class="gate">
@@ -59,6 +59,13 @@
           <div class="hero__content">
             <p class="hero__eyebrow">Save the date</p>
             <h1 class="hero__names">Sandy &amp; Flav</h1>
+            <p class="hero__dates">
+              <span data-show-civil>5&nbsp;juin&nbsp;2027</span>
+              <span class="hero__dates-sep" data-show-both aria-hidden="true"
+                >·</span
+              >
+              <span data-show-religieux>17&nbsp;juillet&nbsp;2027</span>
+            </p>
             <p class="hero__text">
               Après 20&nbsp;ans d’amour, le temps est venu pour nous de se dire
               OUI&nbsp;! Nous voulions, bien sûr, être entourés de notre famille
@@ -93,27 +100,42 @@
             vos côtés&nbsp;!
           </p>
 
-          <div class="event-block" data-show-civil>
-            <p class="when">Samedi 5 juin 2027</p>
-            <h3>Mariage civil &amp; vin d’honneur</h3>
-            <p>Mairie d’Épinay-sur-Orge, puis Salle des Templiers.</p>
-            <p data-show-civil-only>
-              <a href="civil.html">Voir les détails et répondre</a>
-            </p>
-            <p data-show-both><a href="civil.html">Voir les détails</a></p>
+          <div class="event-block event-block--dated" data-show-civil>
+            <div class="date-card" aria-label="Samedi 5 juin 2027">
+              <span class="date-card__weekday">Samedi</span>
+              <span class="date-card__day">5</span>
+              <span class="date-card__month">juin 2027</span>
+            </div>
+            <div class="event-block__body">
+              <h3>Mariage civil &amp; vin d’honneur</h3>
+              <p>Mairie d’Épinay-sur-Orge, puis Salle des Templiers.</p>
+              <p data-show-civil-only>
+                <a href="civil.html">Voir les détails et répondre</a>
+              </p>
+              <p data-show-both><a href="civil.html">Voir les détails</a></p>
+            </div>
           </div>
 
-          <div class="event-block" data-show-religieux>
-            <p class="when">Samedi 17 &amp; dimanche 18 juillet 2027</p>
-            <h3>Cérémonie religieuse &amp; réception</h3>
-            <p>
-              Église <span class="tbc">(lieu et heure à confirmer)</span>, puis
-              Domaine de la Brosse à Montmort / La Madeleine-Villefrouin.
-            </p>
-            <p data-show-religieux-only>
-              <a href="religieux.html">Voir les détails et répondre</a>
-            </p>
-            <p data-show-both><a href="religieux.html">Voir les détails</a></p>
+          <div class="event-block event-block--dated" data-show-religieux>
+            <div
+              class="date-card"
+              aria-label="Samedi 17 et dimanche 18 juillet 2027"
+            >
+              <span class="date-card__weekday">Samedi &amp; dimanche</span>
+              <span class="date-card__day">17–18</span>
+              <span class="date-card__month">juillet 2027</span>
+            </div>
+            <div class="event-block__body">
+              <h3>Cérémonie religieuse &amp; réception</h3>
+              <p>
+                Église <span class="tbc">(lieu et heure à confirmer)</span>, puis
+                Domaine de la Brosse à Montmort / La Madeleine-Villefrouin.
+              </p>
+              <p data-show-religieux-only>
+                <a href="religieux.html">Voir les détails et répondre</a>
+              </p>
+              <p data-show-both><a href="religieux.html">Voir les détails</a></p>
+            </div>
           </div>
         </section>
 

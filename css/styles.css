@@ -261,6 +261,26 @@ a:hover {
   text-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
+.hero__dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+  margin: 0.85rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 4.5vw, 1.85rem);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: #fff8ea;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.hero__dates-sep {
+  opacity: 0.65;
+  font-weight: 400;
+}
+
 .hero__text {
   max-width: 28rem;
   margin: 1rem 0 1.75rem;
@@ -344,6 +364,18 @@ a:hover {
   padding-top: 0;
 }
 
+.event-block--dated {
+  display: grid;
+  gap: 1rem 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 520px) {
+  .event-block--dated {
+    grid-template-columns: auto 1fr;
+  }
+}
+
 .event-block h3 {
   font-family: var(--font-display);
   font-size: 1.45rem;
@@ -368,6 +400,77 @@ a:hover {
 
 .event-block p:last-child {
   margin-bottom: 0;
+}
+
+.event-block__body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Date cards — hierarchy date > lieu */
+.date-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.5rem;
+  padding: 0.85rem 0.9rem 0.95rem;
+  text-align: center;
+  color: var(--leaf);
+  background: rgba(255, 252, 247, 0.92);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 28px rgba(44, 42, 38, 0.06);
+}
+
+.date-card__weekday {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.date-card__day {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 8vw, 3rem);
+  line-height: 1;
+  margin: 0.15rem 0;
+  color: var(--ink);
+}
+
+.date-card__month {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--leaf);
+}
+
+.date-card__time {
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+
+.date-card--hero-inline {
+  display: none;
+}
+
+.page-intro .date-band {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0.25rem;
+}
+
+.page-intro .date-band .date-card {
+  min-width: 7rem;
 }
 
 .tbc {
