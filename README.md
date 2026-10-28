@@ -23,18 +23,22 @@ Sans code valide, le site demande le code et ne liste aucun événement.
 
 ## Brancher le RSVP (Google Sheet + Apps Script)
 
-1. Créer un Google Sheet, feuille nommée `RSVP`
+> Si Google affiche **This app is blocked** : c’est souvent le scope Spreadsheet
+> (`openById` / projet isolé). Utilise un **script lié au Sheet** (ci-dessous).
+
+1. Ouvre ton Google Sheet RSVP (feuille nommée `RSVP`)
 2. En-têtes ligne 1 :
 
    `timestamp | parcours | evenement | nom | email | telephone | participation | enfants | nb_enfants | allergies | message`
 
-3. Extensions → Apps Script → coller [`gas/Code.gs`](gas/Code.gs)
-4. Remplacer `SHEET_ID` par l’ID du document
-5. Déployer → Nouveau déploiement → **Application Web**
+3. **Extensions → Apps Script** (depuis ce Sheet, pas un projet vide à part)
+4. Colle [`gas/Code.gs`](gas/Code.gs)
+5. Exécute d’abord `testSheet` → accepte les permissions Sheet
+6. Déployer → Nouveau déploiement → **Application Web**
    - Exécuter en tant que : **Moi**
    - Qui a accès : **Tout le monde**
-6. Copier l’URL `…/exec` dans [`js/rsvp.js`](js/rsvp.js) → constante `GAS_URL`
-7. Commit + push
+7. Copier l’URL `…/exec` dans [`js/rsvp.js`](js/rsvp.js) → constante `GAS_URL`
+8. Commit + push
 
 Extracts : filtrer le Sheet puis Fichier → Télécharger → CSV.
 
