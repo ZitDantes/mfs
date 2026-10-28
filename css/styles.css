@@ -220,7 +220,7 @@ a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 28%;
+  object-position: center 35%;
   filter: contrast(1.05) brightness(0.92);
   animation: kenburns 18s ease-in-out infinite alternate;
 }
