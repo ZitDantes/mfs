@@ -29,7 +29,7 @@ Sans code valide, le site demande le code et ne liste aucun événement.
 1. Ouvre ton Google Sheet RSVP (feuille nommée `RSVP`)
 2. En-têtes ligne 1 :
 
-   `timestamp | parcours | evenement | nom | email | telephone | participation | brunch | enfants | nb_enfants | allergies | message`
+   `timestamp | parcours | evenement | nom | plus_un | email | telephone | participation | brunch | enfants | nb_enfants | allergies | message`
 
 3. **Extensions → Apps Script** (depuis ce Sheet, pas un projet vide à part)
 4. Colle [`gas/Code.gs`](gas/Code.gs)

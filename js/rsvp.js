@@ -41,6 +41,20 @@
     }
   }
 
+  function togglePlusUn(form) {
+    var yes = form.querySelector('input[name="plus_un"][value="oui"]');
+    var fields = form.querySelector(".plus1-fields");
+    var nom = form.querySelector('input[name="plus_un_nom"]');
+    if (!fields) return;
+
+    var show = !!(yes && yes.checked);
+    fields.hidden = !show;
+    if (nom) {
+      nom.required = show;
+      if (!show) nom.value = "";
+    }
+  }
+
   function setStatus(form, message, kind) {
     var el = form.querySelector(".form__status");
     if (!el) return;
@@ -66,10 +80,15 @@
       brunch = String(data.get("brunch") || "");
     }
 
+    var plusUn = String(data.get("plus_un") || "");
+    var plusUnNom = String(data.get("plus_un_nom") || "").trim();
+
     return {
       parcours: invite ? invite.id : "",
       evenement: evenement,
       nom: String(data.get("nom") || "").trim(),
+      plus_un: plusUn,
+      plus_un_nom: plusUn === "oui" ? plusUnNom : "",
       email: String(data.get("email") || "").trim(),
       telephone: String(data.get("telephone") || "").trim(),
       participation: participation,
@@ -88,6 +107,10 @@
     if (payload.enfants === "oui") {
       var n = Number(payload.nb_enfants);
       if (!n || n < 1) return "Indiquez le nombre d’enfants.";
+    }
+    if (!payload.plus_un) return "Indiquez si vous venez avec un +1.";
+    if (payload.plus_un === "oui" && !payload.plus_un_nom) {
+      return "Indiquez le nom de votre +1.";
     }
 
     var brunchFields = form.querySelectorAll('input[name="brunch"]');
@@ -151,6 +174,13 @@
   function buildRecapRows(payload) {
     var rows = [
       { label: "Nom", value: payload.nom },
+      {
+        label: "+1",
+        value:
+          payload.plus_un === "oui"
+            ? payload.plus_un_nom
+            : "Sans accompagnant",
+      },
       { label: "Participation", value: participationLabel(payload) },
     ];
 
@@ -191,20 +221,27 @@
     recap.className = "form__recap";
     recap.hidden = true;
     recap.innerHTML =
-      "<h3>Recapitulatif de vos reponses</h3>" +
-      "<p class=\"form__recap-lead\">Verifiez les informations ci-dessous avant l envoi definitif.</p>" +
+      '<div class="form__recap-stamp" aria-hidden="true">' +
+      '<span class="form__recap-stamp-inner">' +
+      "<strong>Pret a envoyer</strong>" +
+      "<em>Sandy &amp; Flav</em>" +
+      "</span></div>" +
+      "<h3></h3>" +
+      '<p class="form__recap-lead"></p>' +
       '<ul class="form__recap-list"></ul>' +
       '<div class="form__recap-actions">' +
       '<button type="button" class="btn btn--outline form__recap-edit">Modifier</button>' +
-      '<button type="button" class="btn form__recap-confirm">Confirmer l envoi</button>' +
+      '<button type="button" class="btn form__recap-confirm"></button>' +
       "</div>";
 
-    // Use proper French accents via textContent after insert
     form.appendChild(recap);
     recap.querySelector("h3").textContent = "Récapitulatif de vos réponses";
     recap.querySelector(".form__recap-lead").textContent =
       "Vérifiez les informations ci-dessous avant l’envoi définitif.";
     recap.querySelector(".form__recap-confirm").textContent = "Confirmer l’envoi";
+    recap.querySelector(".form__recap-stamp strong").textContent =
+      "Prêt à envoyer";
+    recap.querySelector(".form__recap-stamp em").textContent = "Sandy & Flav";
 
     recap.querySelector(".form__recap-edit").addEventListener("click", function () {
       hideRecap(form);
@@ -348,12 +385,18 @@
         toggleChildren(form);
       });
     });
+    form.querySelectorAll('input[name="plus_un"]').forEach(function (input) {
+      input.addEventListener("change", function () {
+        togglePlusUn(form);
+      });
+    });
     form.querySelectorAll('input[name="participation"]').forEach(function (input) {
       input.addEventListener("change", function () {
         toggleAttendanceFields(form);
       });
     });
     toggleAttendanceFields(form);
+    togglePlusUn(form);
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();

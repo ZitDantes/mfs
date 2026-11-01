@@ -641,16 +641,79 @@ select:focus {
 
 /* RSVP inline recap (replaces form fields before send) */
 .form__recap {
+  position: relative;
   margin-top: 0.25rem;
   padding: 1.25rem 1rem 1.15rem;
+  padding-top: 2.75rem;
   background: #fffdf8;
   border: 2px solid var(--gold);
   box-shadow: var(--shadow);
   animation: rise 0.35s ease both;
+  overflow: hidden;
 }
 
 .form__recap[hidden] {
   display: none !important;
+}
+
+.form__recap-stamp {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 6.4rem;
+  height: 6.4rem;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transform: rotate(12deg);
+  color: var(--gold);
+  opacity: 0.92;
+}
+
+.form__recap-stamp-inner {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 0.15rem;
+  width: 100%;
+  height: 100%;
+  padding: 0.55rem;
+  text-align: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgba(184, 149, 74, 0.22);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 253, 248, 0.95), rgba(247, 241, 230, 0.88));
+}
+
+.form__recap-stamp-inner::before {
+  content: "";
+  position: absolute;
+  width: 5.55rem;
+  height: 5.55rem;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+  opacity: 0.65;
+}
+
+.form__recap-stamp strong {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  max-width: 4.6rem;
+}
+
+.form__recap-stamp em {
+  position: relative;
+  font-family: var(--font-script);
+  font-style: normal;
+  font-size: 1.05rem;
+  color: var(--leaf);
+  line-height: 1;
 }
 
 .form__recap h3 {
@@ -658,6 +721,11 @@ select:focus {
   font-size: 1.55rem;
   margin: 0 0 0.35rem;
   color: var(--leaf);
+  padding-right: 6.5rem;
+}
+
+.plus1-fields[hidden] {
+  display: none !important;
 }
 
 .form__recap-lead {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Sandy & Flav — mariage 2027" />
     <title>Sandy &amp; Flav</title>
-    <link rel="stylesheet" href="css/styles.css?v=8" />
+    <link rel="stylesheet" href="css/styles.css?v=9" />
   </head>
   <body>
     <div id="invite-gate" class="gate">
@@ -259,6 +259,34 @@
               />
             </div>
 
+            <div class="form__row">
+              <span id="both-plus1-label">Je viens avec un +1</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="both-plus1-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="plus_un" value="oui" required />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="plus_un" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row plus1-fields" hidden>
+              <label for="both-plus1-nom">Nom du / de la +1</label>
+              <input
+                id="both-plus1-nom"
+                name="plus_un_nom"
+                type="text"
+                autocomplete="name"
+              />
+            </div>
+
             <div class="form__row" data-if-meals hidden>
               <label for="both-allergies">Allergies / régimes alimentaires</label>
               <input id="both-allergies" name="allergies" type="text" />
@@ -285,6 +313,6 @@
     </div>
 
     <script src="js/invite.js"></script>
-    <script src="js/rsvp.js?v=3"></script>
+    <script src="js/rsvp.js?v=4"></script>
   </body>
 </html>
