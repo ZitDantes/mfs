@@ -643,7 +643,7 @@ select:focus {
 .rsvp-recap {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 9999;
   display: grid;
   place-items: center;
   padding: 1.25rem;
@@ -656,7 +656,7 @@ select:focus {
 .rsvp-recap__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(44, 42, 38, 0.45);
+  background: rgba(28, 26, 22, 0.72);
 }
 
 .rsvp-recap__panel {
@@ -666,10 +666,12 @@ select:focus {
   max-height: min(90vh, 40rem);
   overflow: auto;
   padding: 1.75rem 1.35rem 1.5rem;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  background: #fffdf8;
+  color: var(--ink);
+  border: 1px solid var(--gold-soft);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   animation: rise 0.35s ease both;
+  opacity: 1;
 }
 
 .rsvp-recap__panel h2 {
