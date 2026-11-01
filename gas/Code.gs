@@ -10,11 +10,13 @@
  *    - Qui a accès : Tout le monde
  *    - Après chaque modif du code : Gérer les déploiements → crayon
  *      → Version = Nouvelle version → Déployer
- * Colonnes Sheet (ligne 1) :
- * timestamp | parcours | evenement | nom | plus_un | email | telephone |
- * participation | brunch | enfants | nb_enfants | allergies | message
+ * Colonnes Sheet (ligne 1) — ordre STRICT :
+ * timestamp | parcours | evenement | nom | plus_un | plus_un_nom |
+ * email | telephone | participation | enfants | brunch | nb_enfants |
+ * allergies | message
  *
- * plus_un = nom de l’accompagnant (vide si sans +1)
+ * plus_un = oui|non (vide si « à aucun »)
+ * plus_un_nom = nom de l’accompagnant (vide si sans +1)
  *
  * 4. URL …/exec → js/rsvp.js (GAS_URL)
  * 5. Après chaque modif : nouvelle version du déploiement Web App
@@ -82,12 +84,13 @@ function doPost(e) {
       data.parcours || "",
       data.evenement || "",
       data.nom || "",
+      data.plus_un || "",
       data.plus_un_nom || "",
       data.email || "",
       data.telephone || "",
       data.participation || "",
-      data.brunch || "",
       data.enfants || "",
+      data.brunch || "",
       data.nb_enfants || "",
       data.allergies || "",
       data.message || "",
