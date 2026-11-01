@@ -129,7 +129,7 @@
               <h3>Cérémonie religieuse &amp; réception</h3>
               <p>
                 Église <span class="tbc">(lieu et heure à confirmer)</span>, puis
-                Domaine de la Brosse à Montmort / La Madeleine-Villefrouin.
+                Domaine de la Brosse Montmort.
               </p>
               <p data-show-religieux-only>
                 <a href="religieux.html">Voir les détails et répondre</a>
@@ -211,25 +211,43 @@
               </div>
             </div>
 
-            <div class="form__row" data-if-attending>
-              <span id="both-enfants-label">Je viens avec les enfants</span>
+            <div class="form__row" data-if-brunch hidden>
+              <span id="both-brunch-label">Brunch du dimanche 18&nbsp;juillet</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="both-brunch-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="brunch" value="oui" />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="brunch" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="both-enfants-label">Avec ou sans enfants</span>
               <div
                 class="choice-group"
                 role="radiogroup"
                 aria-labelledby="both-enfants-label"
               >
                 <label class="choice">
-                  <input type="radio" name="enfants" value="oui" />
-                  Oui
+                  <input type="radio" name="enfants" value="oui" required />
+                  Avec enfants
                 </label>
                 <label class="choice">
                   <input type="radio" name="enfants" value="non" />
-                  Non
+                  Sans enfants
                 </label>
               </div>
             </div>
 
-            <div class="form__row children-fields" data-if-attending hidden>
+            <div class="form__row children-fields" hidden>
               <label for="both-nb-enfants">Nombre d’enfants</label>
               <input
                 id="both-nb-enfants"
@@ -241,10 +259,12 @@
               />
             </div>
 
-            <div class="form__row" data-if-attending>
+            <div class="form__row" data-if-meals hidden>
               <label for="both-allergies">Allergies / régimes alimentaires</label>
               <input id="both-allergies" name="allergies" type="text" />
-              <p class="form__hint">Optionnel — utile pour les repas.</p>
+              <p class="form__hint">
+                Optionnel — pour la réception / le brunch au Domaine.
+              </p>
             </div>
 
             <div class="form__row">

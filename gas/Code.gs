@@ -10,7 +10,12 @@
  *    - Qui a accès : Tout le monde
  *    - Après chaque modif du code : Gérer les déploiements → crayon
  *      → Version = Nouvelle version → Déployer
+ * Colonnes Sheet (ligne 1) :
+ * timestamp | parcours | evenement | nom | email | telephone |
+ * participation | brunch | enfants | nb_enfants | allergies | message
+ *
  * 4. URL …/exec → js/rsvp.js (GAS_URL)
+ * 5. Après chaque modif : nouvelle version du déploiement Web App
  *
  * En Web App, getActiveSpreadsheet() est souvent null : on utilise
  * donc l’ID enregistré par testSheet() + openById().
@@ -78,6 +83,7 @@ function doPost(e) {
       data.email || "",
       data.telephone || "",
       data.participation || "",
+      data.brunch || "",
       data.enfants || "",
       data.nb_enfants || "",
       data.allergies || "",

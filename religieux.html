@@ -101,10 +101,7 @@
             </div>
             <div class="event-block__body">
               <h3>Cocktail, dîner &amp; soirée</h3>
-              <p>
-                Domaine de la Brosse<br />
-                Montmort — La Madeleine-Villefrouin
-              </p>
+              <p>Domaine de la Brosse Montmort</p>
             </div>
           </div>
 
@@ -116,14 +113,7 @@
             </div>
             <div class="event-block__body">
               <h3>Brunch</h3>
-              <p>
-                Domaine de la Brosse<br />
-                Montmort — La Madeleine-Villefrouin
-              </p>
-              <p class="form__hint">
-                Pas de réponse séparée pour le brunch — indiquez simplement votre
-                présence à la journée du 17 ci-dessous.
-              </p>
+              <p>Domaine de la Brosse Montmort</p>
             </div>
           </div>
 
@@ -148,8 +138,8 @@
           <p class="section__eyebrow">Réponse</p>
           <h2 class="section__title">Confirmez votre présence</h2>
           <p class="section__lead">
-            Merci de nous indiquer si vous serez des nôtres pour la cérémonie et
-            la réception du 17&nbsp;juillet.
+            Merci de nous indiquer si vous serez des nôtres pour la cérémonie /
+            réception du 17&nbsp;juillet et pour le brunch du 18.
           </p>
 
           <form
@@ -174,7 +164,9 @@
             </div>
 
             <div class="form__row">
-              <span id="rel-participation-label">Participation</span>
+              <span id="rel-participation-label"
+                >Cérémonie &amp; réception (samedi 17)</span
+              >
               <div
                 class="choice-group"
                 role="radiogroup"
@@ -191,25 +183,43 @@
               </div>
             </div>
 
-            <div class="form__row" data-if-attending>
-              <span id="rel-enfants-label">Je viens avec les enfants</span>
+            <div class="form__row" data-if-brunch>
+              <span id="rel-brunch-label">Brunch (dimanche 18)</span>
+              <div
+                class="choice-group"
+                role="radiogroup"
+                aria-labelledby="rel-brunch-label"
+              >
+                <label class="choice">
+                  <input type="radio" name="brunch" value="oui" />
+                  Oui
+                </label>
+                <label class="choice">
+                  <input type="radio" name="brunch" value="non" />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <span id="rel-enfants-label">Avec ou sans enfants</span>
               <div
                 class="choice-group"
                 role="radiogroup"
                 aria-labelledby="rel-enfants-label"
               >
                 <label class="choice">
-                  <input type="radio" name="enfants" value="oui" />
-                  Oui
+                  <input type="radio" name="enfants" value="oui" required />
+                  Avec enfants
                 </label>
                 <label class="choice">
                   <input type="radio" name="enfants" value="non" />
-                  Non
+                  Sans enfants
                 </label>
               </div>
             </div>
 
-            <div class="form__row children-fields" data-if-attending hidden>
+            <div class="form__row children-fields" hidden>
               <label for="rel-nb-enfants">Nombre d’enfants</label>
               <input
                 id="rel-nb-enfants"
@@ -221,7 +231,7 @@
               />
             </div>
 
-            <div class="form__row" data-if-attending>
+            <div class="form__row" data-if-meals>
               <label for="rel-allergies">Allergies / régimes alimentaires</label>
               <input id="rel-allergies" name="allergies" type="text" />
               <p class="form__hint">

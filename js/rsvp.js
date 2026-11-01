@@ -34,68 +34,91 @@
     if (kind) el.classList.add(kind);
   }
 
-  function isAttending(participation) {
-    return (
-      participation === "oui" ||
-      participation === "civil" ||
-      participation === "religieux" ||
-      participation === "les-deux"
-    );
-  }
-
   function collectPayload(form) {
     var invite = getInvite();
     var data = new FormData(form);
-    var enfants = data.get("enfants") || "non";
+    var enfants = data.get("enfants") || "";
     var nb = data.get("nb_enfants");
     var participation = String(data.get("participation") || "");
+    var evenement = form.getAttribute("data-evenement") || "";
+    var brunch = "";
+
+    if (
+      evenement === "religieux" ||
+      (evenement === "combined" &&
+        (participation === "religieux" || participation === "les-deux"))
+    ) {
+      brunch = String(data.get("brunch") || "");
+    }
 
     return {
       parcours: invite ? invite.id : "",
-      evenement: form.getAttribute("data-evenement") || "",
+      evenement: evenement,
       nom: String(data.get("nom") || "").trim(),
       email: String(data.get("email") || "").trim(),
       telephone: String(data.get("telephone") || "").trim(),
       participation: participation,
-      enfants: isAttending(participation) ? String(enfants) : "non",
-      nb_enfants:
-        isAttending(participation) && enfants === "oui" ? String(nb || "") : "",
+      brunch: brunch,
+      enfants: String(enfants),
+      nb_enfants: enfants === "oui" ? String(nb || "") : "",
       allergies: String(data.get("allergies") || "").trim(),
       message: String(data.get("message") || "").trim(),
     };
   }
 
-  function validate(payload) {
+  function validate(payload, form) {
     if (!payload.nom) return "Indiquez votre nom.";
     if (!payload.participation) return "Indiquez votre participation.";
-    if (isAttending(payload.participation)) {
-      if (!payload.enfants) return "Indiquez si vous venez avec des enfants.";
-      if (payload.enfants === "oui") {
-        var n = Number(payload.nb_enfants);
-        if (!n || n < 1) return "Indiquez le nombre d’enfants.";
+    if (!payload.enfants) return "Indiquez si vous venez avec ou sans enfants.";
+    if (payload.enfants === "oui") {
+      var n = Number(payload.nb_enfants);
+      if (!n || n < 1) return "Indiquez le nombre d’enfants.";
+    }
+
+    var brunchFields = form.querySelectorAll('input[name="brunch"]');
+    if (brunchFields.length) {
+      var evenement = payload.evenement;
+      var needsBrunch =
+        evenement === "religieux" ||
+        (evenement === "combined" &&
+          (payload.participation === "religieux" ||
+            payload.participation === "les-deux"));
+      if (needsBrunch && !payload.brunch) {
+        return "Indiquez si vous serez présents au brunch du dimanche.";
       }
     }
+
     return "";
   }
 
   function toggleAttendanceFields(form) {
     var selected = form.querySelector('input[name="participation"]:checked');
-    var attending = !!(selected && isAttending(selected.value));
-    var extras = form.querySelectorAll("[data-if-attending]");
-    extras.forEach(function (el) {
-      el.hidden = !attending;
+    var participation = selected ? selected.value : "";
+    var evenement = form.getAttribute("data-evenement") || "";
+
+    var showBrunch =
+      evenement === "religieux" ||
+      (evenement === "combined" &&
+        (participation === "religieux" || participation === "les-deux"));
+
+    form.querySelectorAll("[data-if-brunch]").forEach(function (el) {
+      el.hidden = !showBrunch;
     });
-    if (!attending) {
-      var fields = form.querySelector(".children-fields");
-      var nb = form.querySelector('input[name="nb_enfants"]');
-      if (fields) fields.hidden = true;
-      if (nb) {
-        nb.required = false;
-        nb.value = "";
+
+    var showMeals =
+      evenement === "religieux" ||
+      (evenement === "combined" &&
+        (participation === "religieux" || participation === "les-deux"));
+
+    form.querySelectorAll("[data-if-meals]").forEach(function (el) {
+      el.hidden = !showMeals;
+      if (!showMeals) {
+        var allergy = el.querySelector('input[name="allergies"]');
+        if (allergy) allergy.value = "";
       }
-    } else {
-      toggleChildren(form);
-    }
+    });
+
+    toggleChildren(form);
   }
 
   async function submitToGas(payload) {
@@ -149,7 +172,7 @@
       setStatus(form, "", null);
 
       var payload = collectPayload(form);
-      var error = validate(payload);
+      var error = validate(payload, form);
       if (error) {
         setStatus(form, error, "is-err");
         return;
