@@ -639,6 +639,89 @@ select:focus {
   color: #8a3b2b;
 }
 
+/* RSVP recap modal */
+.rsvp-recap {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.rsvp-recap[hidden] {
+  display: none !important;
+}
+
+.rsvp-recap__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(44, 42, 38, 0.45);
+}
+
+.rsvp-recap__panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 26rem);
+  max-height: min(90vh, 40rem);
+  overflow: auto;
+  padding: 1.75rem 1.35rem 1.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  animation: rise 0.35s ease both;
+}
+
+.rsvp-recap__panel h2 {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  margin: 0 0 0.35rem;
+  color: var(--leaf);
+}
+
+.rsvp-recap__panel > p {
+  margin: 0 0 1.15rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.rsvp-recap__list {
+  margin: 0 0 1.35rem;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.rsvp-recap__list li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rsvp-recap__list .label {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.rsvp-recap__list .value {
+  color: var(--ink);
+  font-size: 1.02rem;
+}
+
+.rsvp-recap__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.rsvp-recap__actions .btn {
+  flex: 1 1 8rem;
+}
+
 .children-fields[hidden] {
   display: none !important;
 }
