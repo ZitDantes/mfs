@@ -217,7 +217,7 @@
               </div>
             </div>
 
-            <div class="form__row">
+            <div class="form__row" data-if-coming>
               <span id="rel-enfants-label">Avec ou sans enfants</span>
               <div
                 class="choice-group"
@@ -225,7 +225,7 @@
                 aria-labelledby="rel-enfants-label"
               >
                 <label class="choice">
-                  <input type="radio" name="enfants" value="oui" required />
+                  <input type="radio" name="enfants" value="oui" />
                   Avec enfants
                 </label>
                 <label class="choice">
@@ -235,7 +235,7 @@
               </div>
             </div>
 
-            <div class="form__row children-fields" hidden>
+            <div class="form__row children-fields" data-if-coming hidden>
               <label for="rel-nb-enfants">Nombre d’enfants</label>
               <input
                 id="rel-nb-enfants"
@@ -247,7 +247,7 @@
               />
             </div>
 
-            <div class="form__row">
+            <div class="form__row" data-if-coming>
               <span id="rel-plus1-label">Je viens avec un +1</span>
               <div
                 class="choice-group"
@@ -255,7 +255,7 @@
                 aria-labelledby="rel-plus1-label"
               >
                 <label class="choice">
-                  <input type="radio" name="plus_un" value="oui" required />
+                  <input type="radio" name="plus_un" value="oui" />
                   Oui
                 </label>
                 <label class="choice">
@@ -265,7 +265,7 @@
               </div>
             </div>
 
-            <div class="form__row plus1-fields" hidden>
+            <div class="form__row plus1-fields" data-if-coming hidden>
               <label for="rel-plus1-nom">Nom du / de la +1</label>
               <input
                 id="rel-plus1-nom"
@@ -301,6 +301,6 @@
     </div>
 
     <script src="js/invite.js"></script>
-    <script src="js/rsvp.js?v=4"></script>
+    <script src="js/rsvp.js?v=5"></script>
   </body>
 </html>

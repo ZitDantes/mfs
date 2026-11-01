@@ -6,7 +6,7 @@
    * Exemple : https://script.google.com/macros/s/XXXX/exec
    */
   var GAS_URL =
-    "https://script.google.com/macros/s/AKfycbyxd6gmPD5oN6eG9LhGEEFNWhZJJ6Hktlcv5OK9s_cYlXyr6ucJZIIZRC5uLhWr3mkm/exec";
+    "https://script.google.com/macros/s/AKfycbzdFKeB2DrsbssVLp48gKs_XokFaMB2O5Uhm88uDjFcaeL7GtiWm4OAfBNdEPdDskfm/exec";
 
   var PARTICIPATION_LABELS = {
     oui: "Oui",
@@ -63,6 +63,15 @@
     if (kind) el.classList.add(kind);
   }
 
+  function isComing(participation) {
+    return (
+      participation === "oui" ||
+      participation === "civil" ||
+      participation === "religieux" ||
+      participation === "les-deux"
+    );
+  }
+
   function collectPayload(form) {
     var invite = getInvite();
     var data = new FormData(form);
@@ -70,6 +79,7 @@
     var nb = data.get("nb_enfants");
     var participation = String(data.get("participation") || "");
     var evenement = form.getAttribute("data-evenement") || "";
+    var coming = isComing(participation);
     var brunch = "";
 
     if (
@@ -80,7 +90,7 @@
       brunch = String(data.get("brunch") || "");
     }
 
-    var plusUn = String(data.get("plus_un") || "");
+    var plusUn = coming ? String(data.get("plus_un") || "") : "";
     var plusUnNom = String(data.get("plus_un_nom") || "").trim();
 
     return {
@@ -93,8 +103,8 @@
       telephone: String(data.get("telephone") || "").trim(),
       participation: participation,
       brunch: brunch,
-      enfants: String(enfants),
-      nb_enfants: enfants === "oui" ? String(nb || "") : "",
+      enfants: coming ? String(enfants) : "",
+      nb_enfants: coming && enfants === "oui" ? String(nb || "") : "",
       allergies: String(data.get("allergies") || "").trim(),
       message: String(data.get("message") || "").trim(),
     };
@@ -103,14 +113,17 @@
   function validate(payload, form) {
     if (!payload.nom) return "Indiquez votre nom.";
     if (!payload.participation) return "Indiquez votre participation.";
-    if (!payload.enfants) return "Indiquez si vous venez avec ou sans enfants.";
-    if (payload.enfants === "oui") {
-      var n = Number(payload.nb_enfants);
-      if (!n || n < 1) return "Indiquez le nombre d’enfants.";
-    }
-    if (!payload.plus_un) return "Indiquez si vous venez avec un +1.";
-    if (payload.plus_un === "oui" && !payload.plus_un_nom) {
-      return "Indiquez le nom de votre +1.";
+
+    if (isComing(payload.participation)) {
+      if (!payload.enfants) return "Indiquez si vous venez avec ou sans enfants.";
+      if (payload.enfants === "oui") {
+        var n = Number(payload.nb_enfants);
+        if (!n || n < 1) return "Indiquez le nombre d’enfants.";
+      }
+      if (!payload.plus_un) return "Indiquez si vous venez avec un +1.";
+      if (payload.plus_un === "oui" && !payload.plus_un_nom) {
+        return "Indiquez le nom de votre +1.";
+      }
     }
 
     var brunchFields = form.querySelectorAll('input[name="brunch"]');
@@ -129,10 +142,36 @@
     return "";
   }
 
+  function clearGuestDetails(form) {
+    form.querySelectorAll('input[name="enfants"]').forEach(function (input) {
+      input.checked = false;
+    });
+    form.querySelectorAll('input[name="plus_un"]').forEach(function (input) {
+      input.checked = false;
+    });
+    var nb = form.querySelector('input[name="nb_enfants"]');
+    var plusNom = form.querySelector('input[name="plus_un_nom"]');
+    if (nb) {
+      nb.value = "";
+      nb.required = false;
+    }
+    if (plusNom) {
+      plusNom.value = "";
+      plusNom.required = false;
+    }
+  }
+
   function toggleAttendanceFields(form) {
     var selected = form.querySelector('input[name="participation"]:checked');
     var participation = selected ? selected.value : "";
     var evenement = form.getAttribute("data-evenement") || "";
+    var coming = isComing(participation);
+
+    form.querySelectorAll("[data-if-coming]").forEach(function (el) {
+      el.hidden = !coming;
+    });
+
+    if (!coming) clearGuestDetails(form);
 
     var showBrunch =
       evenement === "religieux" ||
@@ -156,7 +195,15 @@
       }
     });
 
-    toggleChildren(form);
+    if (coming) {
+      toggleChildren(form);
+      togglePlusUn(form);
+    } else {
+      var childrenFields = form.querySelector(".children-fields");
+      var plus1Fields = form.querySelector(".plus1-fields");
+      if (childrenFields) childrenFields.hidden = true;
+      if (plus1Fields) plus1Fields.hidden = true;
+    }
   }
 
   function participationLabel(payload) {
@@ -174,15 +221,18 @@
   function buildRecapRows(payload) {
     var rows = [
       { label: "Nom", value: payload.nom },
-      {
+      { label: "Participation", value: participationLabel(payload) },
+    ];
+
+    if (payload.plus_un) {
+      rows.splice(1, 0, {
         label: "+1",
         value:
           payload.plus_un === "oui"
             ? payload.plus_un_nom
             : "Sans accompagnant",
-      },
-      { label: "Participation", value: participationLabel(payload) },
-    ];
+      });
+    }
 
     if (payload.brunch) {
       rows.push({
@@ -191,13 +241,15 @@
       });
     }
 
-    rows.push({
-      label: "Enfants",
-      value:
-        payload.enfants === "oui"
-          ? "Avec enfants (" + payload.nb_enfants + ")"
-          : "Sans enfants",
-    });
+    if (payload.enfants) {
+      rows.push({
+        label: "Enfants",
+        value:
+          payload.enfants === "oui"
+            ? "Avec enfants (" + payload.nb_enfants + ")"
+            : "Sans enfants",
+      });
+    }
 
     if (payload.email) rows.push({ label: "E-mail", value: payload.email });
     if (payload.telephone) {
