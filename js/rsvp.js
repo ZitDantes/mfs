@@ -312,6 +312,7 @@
     Array.prototype.forEach.call(form.children, function (child) {
       if (
         child.classList.contains("form__recap") ||
+        child.classList.contains("form__success") ||
         child.classList.contains("form__status")
       ) {
         return;
@@ -325,6 +326,7 @@
     Array.prototype.forEach.call(form.children, function (child) {
       if (
         child.classList.contains("form__recap") ||
+        child.classList.contains("form__success") ||
         child.classList.contains("form__status")
       ) {
         return;
@@ -334,6 +336,75 @@
       delete child.dataset.wasHidden;
     });
     toggleAttendanceFields(form);
+  }
+
+  function getOrCreateSuccess(form) {
+    var success = form.querySelector(".form__success");
+    if (success) return success;
+
+    success = document.createElement("div");
+    success.className = "form__success";
+    success.hidden = true;
+    success.innerHTML =
+      '<div class="form__success-glow" aria-hidden="true"></div>' +
+      '<div class="form__success-stamp" aria-hidden="true">' +
+      '<span class="form__success-stamp-inner">' +
+      "<strong></strong><em></em>" +
+      "</span></div>" +
+      '<p class="form__success-eyebrow"></p>' +
+      "<h3></h3>" +
+      '<p class="form__success-text"></p>' +
+      '<div class="form__success-ornament" aria-hidden="true">' +
+      "<span></span><span></span><span></span>" +
+      "</div>" +
+      '<div class="form__success-actions">' +
+      '<a class="btn" href="index.html">Retour a l accueil</a>' +
+      '<a class="btn btn--outline" href="infos.html">Infos pratiques</a>' +
+      "</div>";
+
+    form.appendChild(success);
+    success.querySelector(".form__success-stamp strong").textContent = "Bien reçu";
+    success.querySelector(".form__success-stamp em").textContent = "Sandy & Flav";
+    success.querySelector(".form__success-eyebrow").textContent = "Confirmation";
+    success.querySelector("h3").textContent = "Merci";
+    success.querySelector(".form__success-text").textContent =
+      "Votre réponse a bien été envoyée. On a hâte de célébrer avec vous.";
+    success.querySelector('a[href="index.html"]').textContent = "Retour à l’accueil";
+    return success;
+  }
+
+  function showSuccess(form, payload) {
+    var recap = form.querySelector(".form__recap");
+    if (recap) recap.hidden = true;
+
+    var success = getOrCreateSuccess(form);
+    var firstName = (payload.nom || "").trim().split(/\s+/)[0];
+    var text = success.querySelector(".form__success-text");
+    if (firstName) {
+      text.textContent =
+        "Merci " +
+        firstName +
+        " — votre réponse a bien été envoyée. On a hâte de célébrer avec vous.";
+    }
+
+    Array.prototype.forEach.call(form.children, function (child) {
+      if (child === success) return;
+      child.hidden = true;
+    });
+    success.hidden = false;
+    setStatus(form, "", null);
+
+    var section = form.closest("section");
+    if (section) {
+      var eyebrow = section.querySelector(".section__eyebrow");
+      var title = section.querySelector(".section__title");
+      var lead = section.querySelector(".section__lead");
+      if (eyebrow) eyebrow.hidden = true;
+      if (title) title.hidden = true;
+      if (lead) lead.hidden = true;
+    }
+
+    success.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function showRecap(form, payload) {
@@ -380,10 +451,8 @@
 
     try {
       await submitToGas(payload);
-      hideRecap(form);
-      setStatus(form, "Merci ! Votre réponse a bien été enregistrée.", "is-ok");
-      form.reset();
-      toggleAttendanceFields(form);
+      form._rsvpPayload = null;
+      showSuccess(form, payload);
     } catch (err) {
       setStatus(
         form,
