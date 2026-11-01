@@ -639,69 +639,48 @@ select:focus {
   color: #8a3b2b;
 }
 
-/* RSVP recap modal */
-.rsvp-recap {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: grid;
-  place-items: center;
-  padding: 1.25rem;
+/* RSVP inline recap (replaces form fields before send) */
+.form__recap {
+  margin-top: 0.25rem;
+  padding: 1.25rem 1rem 1.15rem;
+  background: #fffdf8;
+  border: 2px solid var(--gold);
+  box-shadow: var(--shadow);
+  animation: rise 0.35s ease both;
 }
 
-.rsvp-recap[hidden] {
+.form__recap[hidden] {
   display: none !important;
 }
 
-.rsvp-recap__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(28, 26, 22, 0.72);
-}
-
-.rsvp-recap__panel {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 26rem);
-  max-height: min(90vh, 40rem);
-  overflow: auto;
-  padding: 1.75rem 1.35rem 1.5rem;
-  background: #fffdf8;
-  color: var(--ink);
-  border: 1px solid var(--gold-soft);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-  animation: rise 0.35s ease both;
-  opacity: 1;
-}
-
-.rsvp-recap__panel h2 {
+.form__recap h3 {
   font-family: var(--font-display);
-  font-size: 1.65rem;
+  font-size: 1.55rem;
   margin: 0 0 0.35rem;
   color: var(--leaf);
 }
 
-.rsvp-recap__panel > p {
-  margin: 0 0 1.15rem;
+.form__recap-lead {
+  margin: 0 0 1rem;
   color: var(--ink-soft);
   font-size: 0.95rem;
 }
 
-.rsvp-recap__list {
-  margin: 0 0 1.35rem;
+.form__recap-list {
+  margin: 0 0 1.25rem;
   padding: 0;
   list-style: none;
   border-top: 1px solid var(--line);
 }
 
-.rsvp-recap__list li {
+.form__recap-list li {
   display: grid;
   gap: 0.15rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--line);
 }
 
-.rsvp-recap__list .label {
+.form__recap-list .label {
   font-family: var(--font-display);
   font-size: 0.82rem;
   letter-spacing: 0.06em;
@@ -709,18 +688,19 @@ select:focus {
   color: var(--gold);
 }
 
-.rsvp-recap__list .value {
+.form__recap-list .value {
   color: var(--ink);
-  font-size: 1.02rem;
+  font-size: 1.05rem;
+  word-break: break-word;
 }
 
-.rsvp-recap__actions {
+.form__recap-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
 }
 
-.rsvp-recap__actions .btn {
+.form__recap-actions .btn {
   flex: 1 1 8rem;
 }
 

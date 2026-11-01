@@ -23,8 +23,6 @@
     combined: "Les deux événements",
   };
 
-  var pending = null;
-
   function getInvite() {
     return (window.MFSInvite && window.MFSInvite.get && window.MFSInvite.get()) || null;
   }
@@ -185,102 +183,128 @@
     return rows;
   }
 
-  function ensureRecapModal() {
-    var existing = document.getElementById("rsvp-recap");
-    if (existing) return existing;
+  function getOrCreateRecap(form) {
+    var recap = form.querySelector(".form__recap");
+    if (recap) return recap;
 
-    var root = document.createElement("div");
-    root.id = "rsvp-recap";
-    root.className = "rsvp-recap";
-    root.hidden = true;
-    root.setAttribute("role", "dialog");
-    root.setAttribute("aria-modal", "true");
-    root.setAttribute("aria-labelledby", "rsvp-recap-title");
-    root.innerHTML =
-      '<div class="rsvp-recap__backdrop" data-recap-close="1"></div>' +
-      '<div class="rsvp-recap__panel">' +
-      '<h2 id="rsvp-recap-title">Récapitulatif</h2>' +
-      "<p>Vérifiez vos réponses avant l’envoi.</p>" +
-      '<ul class="rsvp-recap__list" id="rsvp-recap-list"></ul>' +
-      '<div class="rsvp-recap__actions">' +
-      '<button type="button" class="btn btn--outline" data-recap-close="1">Modifier</button>' +
-      '<button type="button" class="btn" id="rsvp-recap-confirm">Confirmer l’envoi</button>' +
-      "</div>" +
+    recap = document.createElement("div");
+    recap.className = "form__recap";
+    recap.hidden = true;
+    recap.innerHTML =
+      "<h3>Recapitulatif de vos reponses</h3>" +
+      "<p class=\"form__recap-lead\">Verifiez les informations ci-dessous avant l envoi definitif.</p>" +
+      '<ul class="form__recap-list"></ul>' +
+      '<div class="form__recap-actions">' +
+      '<button type="button" class="btn btn--outline form__recap-edit">Modifier</button>' +
+      '<button type="button" class="btn form__recap-confirm">Confirmer l envoi</button>' +
       "</div>";
 
-    document.body.appendChild(root);
+    // Use proper French accents via textContent after insert
+    form.appendChild(recap);
+    recap.querySelector("h3").textContent = "Récapitulatif de vos réponses";
+    recap.querySelector(".form__recap-lead").textContent =
+      "Vérifiez les informations ci-dessous avant l’envoi définitif.";
+    recap.querySelector(".form__recap-confirm").textContent = "Confirmer l’envoi";
 
-    root.addEventListener("click", function (event) {
-      var target = event.target;
-      if (target && target.getAttribute && target.getAttribute("data-recap-close")) {
-        closeRecap();
-      }
+    recap.querySelector(".form__recap-edit").addEventListener("click", function () {
+      hideRecap(form);
     });
 
-    document
-      .getElementById("rsvp-recap-confirm")
-      .addEventListener("click", confirmRecap);
+    recap
+      .querySelector(".form__recap-confirm")
+      .addEventListener("click", function () {
+        confirmRecap(form);
+      });
 
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape" && !root.hidden) closeRecap();
-    });
-
-    return root;
+    return recap;
   }
 
-  function openRecap(form, payload) {
-    var root = ensureRecapModal();
-    var list = document.getElementById("rsvp-recap-list");
+  function hideFormFields(form) {
+    Array.prototype.forEach.call(form.children, function (child) {
+      if (
+        child.classList.contains("form__recap") ||
+        child.classList.contains("form__status")
+      ) {
+        return;
+      }
+      child.dataset.wasHidden = child.hidden ? "1" : "0";
+      child.hidden = true;
+    });
+  }
+
+  function restoreFormFields(form) {
+    Array.prototype.forEach.call(form.children, function (child) {
+      if (
+        child.classList.contains("form__recap") ||
+        child.classList.contains("form__status")
+      ) {
+        return;
+      }
+      if (child.dataset.wasHidden === "0") child.hidden = false;
+      else if (child.dataset.wasHidden === "1") child.hidden = true;
+      delete child.dataset.wasHidden;
+    });
+    toggleAttendanceFields(form);
+  }
+
+  function showRecap(form, payload) {
+    var recap = getOrCreateRecap(form);
+    var list = recap.querySelector(".form__recap-list");
     list.innerHTML = "";
 
     buildRecapRows(payload).forEach(function (row) {
       var li = document.createElement("li");
-      li.innerHTML =
-        '<span class="label"></span><span class="value"></span>';
-      li.querySelector(".label").textContent = row.label;
-      li.querySelector(".value").textContent = row.value;
+      var label = document.createElement("span");
+      var value = document.createElement("span");
+      label.className = "label";
+      value.className = "value";
+      label.textContent = row.label;
+      value.textContent = row.value;
+      li.appendChild(label);
+      li.appendChild(value);
       list.appendChild(li);
     });
 
-    pending = { form: form, payload: payload };
-    root.hidden = false;
-    document.getElementById("rsvp-recap-confirm").focus();
+    form._rsvpPayload = payload;
+    hideFormFields(form);
+    recap.hidden = false;
+    setStatus(form, "", null);
+    recap.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function closeRecap() {
-    var root = document.getElementById("rsvp-recap");
-    if (root) root.hidden = true;
-    pending = null;
+  function hideRecap(form) {
+    var recap = form.querySelector(".form__recap");
+    if (recap) recap.hidden = true;
+    form._rsvpPayload = null;
+    restoreFormFields(form);
   }
 
-  async function confirmRecap() {
-    if (!pending) return;
+  async function confirmRecap(form) {
+    var payload = form._rsvpPayload;
+    if (!payload) return;
 
-    var form = pending.form;
-    var payload = pending.payload;
-    var button = form.querySelector('button[type="submit"]');
-    var confirmBtn = document.getElementById("rsvp-recap-confirm");
-
-    if (button) button.disabled = true;
+    var confirmBtn = form.querySelector(".form__recap-confirm");
+    var editBtn = form.querySelector(".form__recap-edit");
     if (confirmBtn) confirmBtn.disabled = true;
+    if (editBtn) editBtn.disabled = true;
     setStatus(form, "Envoi en cours…", null);
 
     try {
       await submitToGas(payload);
-      closeRecap();
+      hideRecap(form);
       setStatus(form, "Merci ! Votre réponse a bien été enregistrée.", "is-ok");
       form.reset();
       toggleAttendanceFields(form);
     } catch (err) {
-      closeRecap();
       setStatus(
         form,
         (err && err.message) || "Une erreur est survenue. Réessayez plus tard.",
         "is-err"
       );
+      // Keep recap visible so the guest can retry or edit
     } finally {
-      if (button) button.disabled = false;
       if (confirmBtn) confirmBtn.disabled = false;
+      if (editBtn) editBtn.disabled = false;
     }
   }
 
@@ -291,7 +315,6 @@
       );
     }
 
-    // text/plain évite un preflight CORS strict avec Apps Script
     var res = await fetch(GAS_URL, {
       method: "POST",
       mode: "cors",
@@ -318,6 +341,8 @@
   }
 
   function bindForm(form) {
+    getOrCreateRecap(form);
+
     form.querySelectorAll('input[name="enfants"]').forEach(function (input) {
       input.addEventListener("change", function () {
         toggleChildren(form);
@@ -341,12 +366,11 @@
         return;
       }
 
-      openRecap(form, payload);
+      showRecap(form, payload);
     });
   }
 
   function init() {
-    ensureRecapModal();
     document.querySelectorAll("form.rsvp-form").forEach(bindForm);
   }
 
