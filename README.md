@@ -14,6 +14,8 @@ Remplacer la base si besoin (`https://zitdantes.github.io/mfs`).
 
 Sans code valide, le site demande le code et ne liste aucun événement.
 
+Le parcours est mémorisé en `localStorage` et l’URL garde `?i=…` (favoris, partage, refresh). Les liens internes propagent aussi ce paramètre.
+
 ## Activer GitHub Pages
 
 1. Repo Settings → Pages

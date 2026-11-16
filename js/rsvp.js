@@ -358,8 +358,8 @@
       "<span></span><span></span><span></span>" +
       "</div>" +
       '<div class="form__success-actions">' +
-      '<a class="btn" href="index.html">Retour a l accueil</a>' +
-      '<a class="btn btn--outline" href="infos.html">Infos pratiques</a>' +
+      '<a class="btn" data-success-home href="index.html">Retour a l accueil</a>' +
+      '<a class="btn btn--outline" data-success-infos href="infos.html">Infos pratiques</a>' +
       "</div>";
 
     form.appendChild(success);
@@ -369,7 +369,26 @@
     success.querySelector("h3").textContent = "Merci";
     success.querySelector(".form__success-text").textContent =
       "Votre réponse a bien été envoyée. On a hâte de célébrer avec vous.";
-    success.querySelector('a[href="index.html"]').textContent = "Retour à l’accueil";
+    success.querySelector("[data-success-home]").textContent = "Retour à l’accueil";
+
+    var invite = getInvite();
+    if (invite && window.MFSInvite && window.MFSInvite.withInviteParam) {
+      var home = success.querySelector("[data-success-home]");
+      var infos = success.querySelector("[data-success-infos]");
+      if (home) {
+        home.setAttribute(
+          "href",
+          window.MFSInvite.withInviteParam("index.html", invite.id)
+        );
+      }
+      if (infos) {
+        infos.setAttribute(
+          "href",
+          window.MFSInvite.withInviteParam("infos.html", invite.id)
+        );
+      }
+    }
+
     return success;
   }
 

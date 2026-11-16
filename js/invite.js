@@ -31,9 +31,26 @@
       .replace(/\s+/g, "");
   }
 
+  function readStorageRaw() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return raw;
+
+      // Migration depuis l’ancien stockage (session uniquement).
+      raw = sessionStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        localStorage.setItem(STORAGE_KEY, raw);
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+      return raw;
+    } catch (e) {
+      return null;
+    }
+  }
+
   function getStoredInvite() {
     try {
-      var raw = sessionStorage.getItem(STORAGE_KEY);
+      var raw = readStorageRaw();
       if (!raw) return null;
       var parsed = JSON.parse(raw);
       if (!parsed || !parsed.id || !INVITES[parsed.id]) return null;
@@ -44,10 +61,15 @@
   }
 
   function storeInvite(invite) {
-    sessionStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ id: invite.id, at: Date.now() })
-    );
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ id: invite.id, at: Date.now() })
+      );
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      // Stockage indisponible (mode privé strict) : l’URL ?i= reste le filet.
+    }
   }
 
   function resolveFromQuery() {
@@ -71,13 +93,47 @@
     return true;
   }
 
-  function cleanInviteParam() {
-    if (!window.location.search) return;
+  function withInviteParam(href, inviteId) {
+    if (!href || !inviteId) return href;
+
+    var hash = "";
+    var hashIndex = href.indexOf("#");
+    if (hashIndex !== -1) {
+      hash = href.slice(hashIndex);
+      href = href.slice(0, hashIndex);
+    }
+
+    try {
+      var url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) return href + hash;
+      url.searchParams.set("i", inviteId);
+      var path = url.pathname.split("/").pop() || "index.html";
+      var search = url.search || "";
+      return path + search + hash;
+    } catch (e) {
+      return href + hash;
+    }
+  }
+
+  function ensureInviteInUrl(invite) {
     var url = new URL(window.location.href);
-    if (!url.searchParams.has("i")) return;
-    url.searchParams.delete("i");
-    var next = url.pathname + (url.search || "") + url.hash;
-    window.history.replaceState({}, "", next);
+    if (url.searchParams.get("i") === invite.id) return;
+    url.searchParams.set("i", invite.id);
+    window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+  }
+
+  function rewriteInternalLinks(invite) {
+    document.querySelectorAll("a[href]").forEach(function (link) {
+      var href = link.getAttribute("href");
+      if (!href || href.charAt(0) === "#") return;
+      if (/^(mailto:|tel:|javascript:)/i.test(href)) return;
+      if (/^https?:\/\//i.test(href) && href.indexOf(window.location.origin) !== 0) {
+        return;
+      }
+
+      var next = withInviteParam(href, invite.id);
+      if (next && next !== href) link.setAttribute("href", next);
+    });
   }
 
   function showGate() {
@@ -155,23 +211,23 @@
 
       storeInvite(invite);
       if (error) error.textContent = "";
-      bootWithInvite(invite, false);
+      bootWithInvite(invite);
     });
   }
 
-  function bootWithInvite(invite, fromQuery) {
+  function bootWithInvite(invite) {
     var page = currentPage();
 
     if (!pageAllowed(invite, page)) {
-      window.location.replace("index.html");
+      window.location.replace("index.html?i=" + encodeURIComponent(invite.id));
       return;
     }
 
-    if (fromQuery) cleanInviteParam();
-
+    ensureInviteInUrl(invite);
     showSite();
     applyNav(invite);
     applyVisibility(invite);
+    rewriteInternalLinks(invite);
 
     document.dispatchEvent(
       new CustomEvent("mfs:invite-ready", { detail: { invite: invite } })
@@ -184,13 +240,13 @@
     var fromQuery = resolveFromQuery();
     if (fromQuery) {
       storeInvite(fromQuery);
-      bootWithInvite(fromQuery, true);
+      bootWithInvite(fromQuery);
       return;
     }
 
     var stored = getStoredInvite();
     if (stored) {
-      bootWithInvite(stored, false);
+      bootWithInvite(stored);
       return;
     }
 
@@ -199,6 +255,7 @@
 
   window.MFSInvite = {
     get: getStoredInvite,
+    withInviteParam: withInviteParam,
     codes: Object.keys(INVITES),
   };
 
