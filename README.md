@@ -16,6 +16,10 @@ Sans code valide, le site demande le code et ne liste aucun événement.
 
 Le parcours est mémorisé en `localStorage` et l’URL garde `?i=…` (favoris, partage, refresh). Les liens internes propagent aussi ce paramètre.
 
+- Un lien `?i=` **valide remplace** le parcours mémorisé (priorité URL).
+- Pied de page : **Entrer un autre code** efface le stockage et réaffiche le formulaire.
+- HTML injecté après coup (ex. écran succès RSVP) : appeler `MFSInvite.rewriteLinks(root)`.
+
 ## Activer GitHub Pages
 
 1. Repo Settings → Pages

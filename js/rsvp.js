@@ -371,22 +371,9 @@
       "Votre réponse a bien été envoyée. On a hâte de célébrer avec vous.";
     success.querySelector("[data-success-home]").textContent = "Retour à l’accueil";
 
-    var invite = getInvite();
-    if (invite && window.MFSInvite && window.MFSInvite.withInviteParam) {
-      var home = success.querySelector("[data-success-home]");
-      var infos = success.querySelector("[data-success-infos]");
-      if (home) {
-        home.setAttribute(
-          "href",
-          window.MFSInvite.withInviteParam("index.html", invite.id)
-        );
-      }
-      if (infos) {
-        infos.setAttribute(
-          "href",
-          window.MFSInvite.withInviteParam("infos.html", invite.id)
-        );
-      }
+    // Liens créés après le boot : propager ?i= via le contrat MFSInvite.
+    if (window.MFSInvite && window.MFSInvite.rewriteLinks) {
+      window.MFSInvite.rewriteLinks(success);
     }
 
     return success;

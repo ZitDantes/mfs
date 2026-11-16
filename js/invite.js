@@ -33,16 +33,23 @@
 
   function readStorageRaw() {
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return raw;
+      var localRaw = localStorage.getItem(STORAGE_KEY);
+      if (localRaw) return localRaw;
+    } catch (e) {
+      // localStorage indisponible
+    }
 
-      // Migration depuis l’ancien stockage (session uniquement).
-      raw = sessionStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        localStorage.setItem(STORAGE_KEY, raw);
+    // Migration depuis l’ancien stockage (session uniquement).
+    try {
+      var sessionRaw = sessionStorage.getItem(STORAGE_KEY);
+      if (!sessionRaw) return null;
+      try {
+        localStorage.setItem(STORAGE_KEY, sessionRaw);
         sessionStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        // Migration impossible : on garde quand même la valeur session.
       }
-      return raw;
+      return sessionRaw;
     } catch (e) {
       return null;
     }
@@ -66,9 +73,26 @@
         STORAGE_KEY,
         JSON.stringify({ id: invite.id, at: Date.now() })
       );
-      sessionStorage.removeItem(STORAGE_KEY);
     } catch (e) {
       // Stockage indisponible (mode privé strict) : l’URL ?i= reste le filet.
+    }
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  function clearStoredInvite() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      // ignore
+    }
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      // ignore
     }
   }
 
@@ -93,6 +117,10 @@
     return true;
   }
 
+  /**
+   * Ajoute / met à jour ?i= sur un lien interne.
+   * Conserve la forme relative d’origine (ex. civil.html, sous/dossier.html).
+   */
   function withInviteParam(href, inviteId) {
     if (!href || !inviteId) return href;
 
@@ -107,9 +135,13 @@
       var url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return href + hash;
       url.searchParams.set("i", inviteId);
-      var path = url.pathname.split("/").pop() || "index.html";
-      var search = url.search || "";
-      return path + search + hash;
+
+      if (/^https?:\/\//i.test(href) || href.charAt(0) === "/") {
+        return url.pathname + url.search + hash;
+      }
+
+      var pathOnly = href.split("?")[0];
+      return pathOnly + url.search + hash;
     } catch (e) {
       return href + hash;
     }
@@ -122,8 +154,24 @@
     window.history.replaceState({}, "", url.pathname + url.search + url.hash);
   }
 
-  function rewriteInternalLinks(invite) {
-    document.querySelectorAll("a[href]").forEach(function (link) {
+  function stripInviteFromUrl() {
+    var url = new URL(window.location.href);
+    if (!url.searchParams.has("i")) return;
+    url.searchParams.delete("i");
+    var next = url.pathname + (url.search || "") + url.hash;
+    window.history.replaceState({}, "", next);
+  }
+
+  /**
+   * À rappeler sur tout HTML injecté après le boot (ex. écran succès RSVP) :
+   * MFSInvite.rewriteLinks(rootElement)
+   */
+  function rewriteInternalLinks(invite, root) {
+    if (!invite) return;
+    var scope = root || document;
+    if (!scope || !scope.querySelectorAll) return;
+
+    scope.querySelectorAll("a[href]").forEach(function (link) {
       var href = link.getAttribute("href");
       if (!href || href.charAt(0) === "#") return;
       if (/^(mailto:|tel:|javascript:)/i.test(href)) return;
@@ -141,6 +189,7 @@
     var site = document.getElementById("site");
     if (gate) gate.hidden = false;
     if (site) site.hidden = true;
+    document.body.removeAttribute("data-invite");
   }
 
   function showSite() {
@@ -190,6 +239,32 @@
     document.body.dataset.invite = invite.id;
   }
 
+  function ensureSwitchInviteControl() {
+    var footer = document.querySelector(".site-footer");
+    if (!footer || footer.querySelector("[data-switch-invite]")) return;
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "site-footer__switch";
+    btn.setAttribute("data-switch-invite", "1");
+    btn.textContent = "Entrer un autre code";
+    btn.addEventListener("click", function () {
+      clearInviteAndShowGate();
+    });
+    footer.appendChild(btn);
+  }
+
+  function clearInviteAndShowGate() {
+    clearStoredInvite();
+    stripInviteFromUrl();
+    var input = document.getElementById("invite-code");
+    var error = document.getElementById("invite-error");
+    if (input) input.value = "";
+    if (error) error.textContent = "";
+    showGate();
+    if (input) input.focus();
+  }
+
   function bindGateForm() {
     var form = document.getElementById("invite-form");
     if (!form) return;
@@ -219,7 +294,10 @@
     var page = currentPage();
 
     if (!pageAllowed(invite, page)) {
-      window.location.replace("index.html?i=" + encodeURIComponent(invite.id));
+      window.location.replace(
+        withInviteParam("index.html", invite.id) ||
+          "index.html?i=" + encodeURIComponent(invite.id)
+      );
       return;
     }
 
@@ -227,7 +305,8 @@
     showSite();
     applyNav(invite);
     applyVisibility(invite);
-    rewriteInternalLinks(invite);
+    rewriteInternalLinks(invite, document);
+    ensureSwitchInviteControl();
 
     document.dispatchEvent(
       new CustomEvent("mfs:invite-ready", { detail: { invite: invite } })
@@ -237,6 +316,7 @@
   function init() {
     bindGateForm();
 
+    // Un ?i= valide remplace toujours le parcours mémorisé.
     var fromQuery = resolveFromQuery();
     if (fromQuery) {
       storeInvite(fromQuery);
@@ -256,6 +336,10 @@
   window.MFSInvite = {
     get: getStoredInvite,
     withInviteParam: withInviteParam,
+    rewriteLinks: function (root) {
+      rewriteInternalLinks(getStoredInvite(), root || document);
+    },
+    clear: clearInviteAndShowGate,
     codes: Object.keys(INVITES),
   };
 
